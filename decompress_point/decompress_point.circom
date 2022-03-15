@@ -13,6 +13,8 @@ template decompress_point() {
     signal output y;
 
     var i;
+
+    //global prime
     var p = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
 
     component b2nY = Bits2Num(254);
@@ -35,13 +37,19 @@ template decompress_point() {
     var y_candidate_1 = sqrt(before_sqrt);
     var y_candidate_2 = p - y_candidate_1;
 
-    if (y_candidate_1 / 2 == y_sign) {
-        y <== y_candidate_1;
-    } else {
-        y <== y_candidate_2;
-    }
+    var y_1_mod_2 = y_candidate_1 / 2;
+    var y_2_mod_2 = y_candidate_2 / 2;
+
+    y <== (1 - y_sign) * ( //if y_sign is even
+            (1 - y_1_mod_2 - y_sign) * y_candidate_1 + // (1 - x - 0) 
+            (1 - y_2_mod_2 / 2 - y_sign) * y_candidate_2 // (1 - y - 0) hence we choose the x or y that equals 0
+        ) + y_sign * (
+            (1 + y_1_mod_2 - y_sign) * y_candidate_1 + // (1 + x - 1)
+            (1 + y_2_mod_2 - y_sign) * y_candidate_2 // (1 + y - 1) hence we choose x or y = 1
+        );
 
     component babyCheck = BabyCheck();
     babyCheck.x <== x;
     babyCheck.y <== y;
 }
+
