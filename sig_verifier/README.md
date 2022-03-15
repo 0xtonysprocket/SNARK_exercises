@@ -8,7 +8,7 @@ Create Signature then Write Input:
 
 Generate Witness: (from inside sig_circuit_js)
 
-3. node generate_witness.js sig_circuit.wasm input.json witness.wtns
+3. node generate_witness.js sig_circuit.wasm input.json ../witness.wtns
 
 Start Powers of Tau:
 
