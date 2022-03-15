@@ -37,12 +37,17 @@ template decompress_point() {
     var y_candidate_1 = sqrt(before_sqrt);
     var y_candidate_2 = p - y_candidate_1;
 
-    var y_1_mod_2 = y_candidate_1 / 2;
-    var y_2_mod_2 = y_candidate_2 / 2;
+    component y1_bits = Num2Bits_strict();
+    y_candidate_1 ==> y1_bits.in;
+    y_1_mod_2 <== y1_bits.out[254];
+
+    component y2_bits = Num2Bits_strict();
+    y_candidate_2 ==> y2_bits.in;
+    y_2_mod_2 <== y2_bits.out[254];
 
     y <== (1 - y_sign) * ( //if y_sign is even
             (1 - y_1_mod_2 - y_sign) * y_candidate_1 + // (1 - x - 0) 
-            (1 - y_2_mod_2 / 2 - y_sign) * y_candidate_2 // (1 - y - 0) hence we choose the x or y that equals 0
+            (1 - y_2_mod_2 - y_sign) * y_candidate_2 // (1 - y - 0) hence we choose the x or y that equals 0
         ) + y_sign * (
             (1 + y_1_mod_2 - y_sign) * y_candidate_1 + // (1 + x - 1)
             (1 + y_2_mod_2 - y_sign) * y_candidate_2 // (1 + y - 1) hence we choose x or y = 1
